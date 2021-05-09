@@ -1,6 +1,7 @@
 package com.travel.trippin.data;
 
-import com.travel.trippin.data.model.LoggedInUser;
+import com.travel.trippin.data.model.LoggedInTripper;
+import com.travel.trippin.sql.DatabaseHelper;
 
 /**
  * Class that requests authentication and user information from the remote data source and
@@ -14,7 +15,7 @@ public class LoginRepository {
 
     // If user credentials will be cached in local storage, it is recommended it be encrypted
     // @see https://developer.android.com/training/articles/keystore
-    private LoggedInUser user = null;
+    private LoggedInTripper user = null;
 
     // private constructor : singleton access
     private LoginRepository(LoginDataSource dataSource) {
@@ -37,17 +38,17 @@ public class LoginRepository {
         dataSource.logout();
     }
 
-    private void setLoggedInUser(LoggedInUser user) {
+    private void setLoggedInUser(LoggedInTripper user) {
         this.user = user;
         // If user credentials will be cached in local storage, it is recommended it be encrypted
         // @see https://developer.android.com/training/articles/keystore
     }
 
-    public Result<LoggedInUser> login(String username, String password) {
+    public Result<LoggedInTripper> login(String emailOrTripperName, String password, DatabaseHelper db) {
         // handle login
-        Result<LoggedInUser> result = dataSource.login(username, password);
+        Result<LoggedInTripper> result = dataSource.login(emailOrTripperName, password, db);
         if (result instanceof Result.Success) {
-            setLoggedInUser(((Result.Success<LoggedInUser>) result).getData());
+            setLoggedInUser(((Result.Success<LoggedInTripper>) result).getData());
         }
         return result;
     }

@@ -1,26 +1,26 @@
-package com.travel.trippin.activities.ui.login;
+package com.travel.trippin.activities.ui.registration;
 
 import androidx.annotation.Nullable;
 
 /**
  * Authentication result : success (user details) or error message.
  */
-public class LoginResult {
+public class RegistrationResult {
     @Nullable
-    private LoggedInTripperView success;
+    private RegisteredTripperView success;
     @Nullable
     private String error;
 
-    LoginResult(@Nullable String error) {
+    RegistrationResult(@Nullable String error) {
         this.error = error;
     }
 
-    LoginResult(@Nullable LoggedInTripperView success) {
+    RegistrationResult(@Nullable RegisteredTripperView success) {
         this.success = success;
     }
 
     @Nullable
-    public LoggedInTripperView getSuccess() {
+    public RegisteredTripperView getSuccess() {
         return success;
     }
 

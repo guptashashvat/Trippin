@@ -1,24 +1,24 @@
-package com.travel.trippin.activities.ui.login;
+package com.travel.trippin.activities.ui.registration;
 
 import androidx.annotation.Nullable;
 
 /**
  * Data validation state of the login form.
  */
-public class LoginFormState {
+public class RegistrationFormState {
     @Nullable
     private Integer trippernameError;
     @Nullable
     private Integer passwordError;
     private boolean isDataValid;
 
-    LoginFormState(@Nullable Integer trippernameError, @Nullable Integer passwordError) {
+    RegistrationFormState(@Nullable Integer trippernameError, @Nullable Integer passwordError) {
         this.trippernameError = trippernameError;
         this.passwordError = passwordError;
         this.isDataValid = false;
     }
 
-    LoginFormState(boolean isDataValid) {
+    RegistrationFormState(boolean isDataValid) {
         this.trippernameError = null;
         this.passwordError = null;
         this.isDataValid = isDataValid;
