@@ -1,14 +1,27 @@
 <resources>
     <string name="app_name">Trippin</string>
-    <!-- Strings related to login -->
+    <string name="register_text">Not a tripper yet?</string>
+    <string name="prompt_first_name">First Name</string>
+    <string name="prompt_last_name">Last Name</string>
+    <string name="prompt_tripperName">TripperName</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
+    <string name="prompt_confirm_password">Confirm Password</string>
+
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_register">Register</string>
+
     <string name="invalid_trippername">Please Enter a valid value</string>
     <string name="invalid_password">Password must be >5 characters</string>
+    <string name="invalid_firstName">Please enter valid value</string>
+    <string name="invalid_lastName">Please enter valid value</string>
+    <string name="invalid_tripperName">Please enter valid value</string>
+    <string name="invalid_email">Please enter valid email</string>
+    <string name="confirm_password_err">Passwords do not match</string>
+    <string name="wrong_password">Not a valid password</string>
     <string name="login_failed">"Login failed"</string>
+
+    <string name="welcome">"Welcome !"</string>
     <string name="title_activity_tripper">MainActivity</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>

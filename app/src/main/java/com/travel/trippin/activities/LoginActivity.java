@@ -12,11 +12,13 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.travel.trippin.R;
 import com.travel.trippin.activities.ui.login.LoggedInTripperView;
 import com.travel.trippin.activities.ui.login.LoginViewModel;
@@ -123,9 +125,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void updateUiWithUser(LoggedInTripperView model) {
-        String welcome = getString(R.string.welcome) + model.getDisplayName();
-        // TODO : initiate successful logged in experience
-        Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_SHORT).show();
 
         setResult(Activity.RESULT_OK);
 
@@ -133,7 +133,34 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
-    private void showLoginFailed(String errorString) {
-        Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+    private void showLoginFailed(String errMsg) {
+        hideKeyboardFrom();
+        Snackbar snackbar = Snackbar.make(findViewById(R.id.container), errMsg, 12000);
+        snackbar.setAction("Clear Fields!", v -> {
+            emptyInputEditText();
+            Toast.makeText(getApplicationContext(), errMsg, Toast.LENGTH_SHORT).show();
+        });
+        snackbar.show();
     }
+
+    /**
+     * method to Hide keyboard
+     */
+    private void hideKeyboardFrom() {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        View view = activity.getCurrentFocus();
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    /**
+     * This method is to empty all input edit text
+     */
+    private void emptyInputEditText() {
+        trippernameEditText.setText(null);
+        passwordEditText.setText(null);
+    }
+
 }
