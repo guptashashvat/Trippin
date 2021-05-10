@@ -29,7 +29,7 @@ import com.travel.trippin.sql.DatabaseHelper;
 public class LoginActivity extends AppCompatActivity {
 
     private final AppCompatActivity activity = LoginActivity.this;
-    EditText trippernameEditText;
+    EditText tripperNameEditText;
     EditText passwordEditText;
     Button loginButton;
     ProgressBar loadingProgressBar;
@@ -55,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
             }
             loginButton.setEnabled(loginFormState.isDataValid());
             if (loginFormState.getTrippernameError() != null) {
-                trippernameEditText.setError(getString(loginFormState.getTrippernameError()));
+                tripperNameEditText.setError(getString(loginFormState.getTrippernameError()));
             }
             if (loginFormState.getPasswordError() != null) {
                 passwordEditText.setError(getString(loginFormState.getPasswordError()));
@@ -77,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        trippernameEditText = binding.trippername;
+        tripperNameEditText = binding.trippername;
         passwordEditText = binding.password;
         loginButton = binding.login;
         loadingProgressBar = binding.loading;
@@ -103,15 +103,15 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                loginViewModel.loginDataChanged(trippernameEditText.getText().toString(),
+                loginViewModel.loginDataChanged(tripperNameEditText.getText().toString(),
                         passwordEditText.getText().toString());
             }
         };
-        trippernameEditText.addTextChangedListener(afterTextChangedListener);
+        tripperNameEditText.addTextChangedListener(afterTextChangedListener);
         passwordEditText.addTextChangedListener(afterTextChangedListener);
         passwordEditText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                loginViewModel.login(trippernameEditText.getText().toString(),
+                loginViewModel.login(tripperNameEditText.getText().toString(),
                         passwordEditText.getText().toString(), db);
             }
             return false;
@@ -119,7 +119,7 @@ public class LoginActivity extends AppCompatActivity {
 
         loginButton.setOnClickListener(v -> {
             loadingProgressBar.setVisibility(View.VISIBLE);
-            loginViewModel.login(trippernameEditText.getText().toString(),
+            loginViewModel.login(tripperNameEditText.getText().toString(),
                     passwordEditText.getText().toString(), db);
         });
     }
@@ -159,7 +159,7 @@ public class LoginActivity extends AppCompatActivity {
      * This method is to empty all input edit text
      */
     private void emptyInputEditText() {
-        trippernameEditText.setText(null);
+        tripperNameEditText.setText(null);
         passwordEditText.setText(null);
     }
 

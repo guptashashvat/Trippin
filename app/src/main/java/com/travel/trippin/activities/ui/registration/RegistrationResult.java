@@ -2,12 +2,14 @@ package com.travel.trippin.activities.ui.registration;
 
 import androidx.annotation.Nullable;
 
+import com.travel.trippin.data.model.Tripper;
+
 /**
  * Authentication result : success (user details) or error message.
  */
 public class RegistrationResult {
     @Nullable
-    private RegisteredTripperView success;
+    private Tripper success;
     @Nullable
     private String error;
 
@@ -15,17 +17,13 @@ public class RegistrationResult {
         this.error = error;
     }
 
-    RegistrationResult(@Nullable RegisteredTripperView success) {
+    RegistrationResult(@Nullable Tripper success) {
         this.success = success;
     }
 
     @Nullable
-    public RegisteredTripperView getSuccess() {
-        return success;
-    }
+    public Tripper getSuccess() { return success; }
 
     @Nullable
-    public String getError() {
-        return error;
-    }
+    public String getError() { return error; }
 }

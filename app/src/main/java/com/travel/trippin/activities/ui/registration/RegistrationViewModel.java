@@ -7,65 +7,91 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.travel.trippin.R;
-import com.travel.trippin.data.LoginRepository;
+import com.travel.trippin.data.RegistrationRepository;
 import com.travel.trippin.data.Result;
 import com.travel.trippin.data.model.LoggedInTripper;
+import com.travel.trippin.data.model.Tripper;
 import com.travel.trippin.sql.DatabaseHelper;
 
 public class RegistrationViewModel extends ViewModel {
 
-    private MutableLiveData<RegistrationFormState> loginFormState = new MutableLiveData<>();
-    private MutableLiveData<RegistrationResult> loginResult = new MutableLiveData<>();
-    private LoginRepository loginRepository;
+    private MutableLiveData<RegistrationFormState> registrationFormState = new MutableLiveData<>();
+    private MutableLiveData<RegistrationResult> registrationResult = new MutableLiveData<>();
+    private RegistrationRepository registrationRepository;
 
-    RegistrationViewModel(LoginRepository loginRepository) {
-        this.loginRepository = loginRepository;
+    RegistrationViewModel(RegistrationRepository registrationRepository) {
+        this.registrationRepository = registrationRepository;
     }
 
-    public LiveData<RegistrationFormState> getLoginFormState() {
-        return loginFormState;
-    }
+    public LiveData<RegistrationFormState> getRegistrationFormState() { return registrationFormState; }
+    public LiveData<RegistrationResult> getRegistrationResult() { return registrationResult; }
 
-    public LiveData<RegistrationResult> getLoginResult() {
-        return loginResult;
-    }
-
-    public void login(String emailOrTripperName, String password, DatabaseHelper db) {
-        // can be launched in a separate asynchronous job
-        Result<LoggedInTripper> result = loginRepository.login(emailOrTripperName, password, db);
+    public void register(String firstName, String lastName, String email, String tripperName,
+                         String password, DatabaseHelper db) {
+        Result<Tripper> result = registrationRepository.register(firstName, lastName, email, tripperName,
+                password, db);
 
         if (result instanceof Result.Success) {
-            LoggedInTripper data = ((Result.Success<LoggedInTripper>) result).getData();
-            loginResult.setValue(new RegistrationResult(new RegisteredTripperView(data.getTripper())));
+            registrationResult.setValue(new RegistrationResult(((Result.Success<Tripper>) result).getData()));
         } else {
-            loginResult.setValue(new RegistrationResult(((Result.Error) result).getError().getMessage()));
+            Result.Error err = (Result.Error) result;
+            registrationResult.setValue(new RegistrationResult(err.getError().getMessage()));
         }
     }
 
-    public void loginDataChanged(String emailOrTripperName, String password) {
-        if (!isEmailOrTripperNameValid(emailOrTripperName)) {
-            loginFormState.setValue(new RegistrationFormState(R.string.invalid_trippername, null));
+    public void registrationDataChanged(String firstName, String lastName, String email, String tripperName,
+                                        String password, String confirmPassword) {
+        if (!isFirstNameValid(firstName)) {
+            registrationFormState.setValue(new RegistrationFormState(R.string.invalid_firstName, null,
+                    null, null, null, null));
+        } else if (!isLastNameValid(lastName)) {
+            registrationFormState.setValue(new RegistrationFormState(null, R.string.invalid_lastName,
+                    null, null, null, null));
+        } else if (!isEmailValid(email)) {
+            registrationFormState.setValue(new RegistrationFormState(null, null,
+                    null, R.string.invalid_email, null, null));
+        } else if (!isTripperNameValid(tripperName)) {
+            registrationFormState.setValue(new RegistrationFormState(null, null,
+                    null, R.string.invalid_tripperName, null, null));
         } else if (!isPasswordValid(password)) {
-            loginFormState.setValue(new RegistrationFormState(null, R.string.invalid_password));
+            registrationFormState.setValue(new RegistrationFormState(null, null,
+                    null, null, R.string.invalid_password, null));
+        } else if (!isConfirmPasswordValid(password, confirmPassword)) {
+            registrationFormState.setValue(new RegistrationFormState(null, null,
+                    null, null, null, R.string.confirm_password_err));
         } else {
-            loginFormState.setValue(new RegistrationFormState(true));
+            registrationFormState.setValue(new RegistrationFormState(true));
         }
     }
 
-    // A placeholder username validation check
-    private boolean isEmailOrTripperNameValid(String emailOrTripperName) {
-        if (emailOrTripperName == null) {
-            return false;
+    private boolean isFirstNameValid(String firstName) {
+        if (firstName != null && !firstName.trim().isEmpty()) {
+            return "^[a-zA-Z]{3,50}$".matches(firstName);
         }
-        if (emailOrTripperName.contains("@")) {
-            return Patterns.EMAIL_ADDRESS.matcher(emailOrTripperName).matches();
-        } else {
-            return !emailOrTripperName.trim().isEmpty();
-        }
+        return false;
     }
-
-    // A placeholder password validation check
+    private boolean isLastNameValid(String lastName) {
+        if (lastName != null && !lastName.trim().isEmpty()) {
+            return "^[a-zA-Z]{3,50}$".matches(lastName);
+        }
+        return true;
+    }
+    private boolean isEmailValid(String email) {
+        if (email != null && !email.trim().isEmpty()) {
+            return Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        }
+        return false;
+    }
+    private boolean isTripperNameValid(String tripperName) {
+        if (tripperName != null && !tripperName.trim().isEmpty()) {
+            return "^[a-zA-Z0-9_]{3,15}$".matches(tripperName);
+        }
+        return false;
+    }
     private boolean isPasswordValid(String password) {
         return password != null && password.trim().length() > 5;
+    }
+    private boolean isConfirmPasswordValid(String password, String confirmPassword) {
+        return password.equals(confirmPassword);
     }
 }
