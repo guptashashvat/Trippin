@@ -7,6 +7,8 @@
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="prompt_confirm_password">Confirm Password</string>
+    <string name="register_question">Not registered yet?</string>
+    <string name="login_question">Already registered? Sign in</string>
 
     <string name="action_sign_in">Sign in</string>
     <string name="action_register">Register</string>
@@ -19,7 +21,8 @@
     <string name="invalid_email">Please enter valid email</string>
     <string name="confirm_password_err">Passwords do not match</string>
     <string name="wrong_password">Not a valid password</string>
-    <string name="login_failed">"Login failed"</string>
+    <string name="login_failed">Login failed</string>
+    <string name="registration_success">Congrats! Your registration is successful</string>
 
     <string name="welcome">"Welcome !"</string>
     <string name="title_activity_tripper">MainActivity</string>

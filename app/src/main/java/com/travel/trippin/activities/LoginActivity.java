@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,7 +13,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -25,13 +25,16 @@ import com.travel.trippin.activities.ui.login.LoginViewModel;
 import com.travel.trippin.activities.ui.login.LoginViewModelFactory;
 import com.travel.trippin.databinding.ActivityLoginBinding;
 import com.travel.trippin.sql.DatabaseHelper;
+import com.travel.trippin.util.HelperUtility;
 
 public class LoginActivity extends AppCompatActivity {
 
     private final AppCompatActivity activity = LoginActivity.this;
+    public static final String EXTRA_TRIPPER_NAME = "tripperName";
     EditText tripperNameEditText;
     EditText passwordEditText;
     Button loginButton;
+    Button registerButton;
     ProgressBar loadingProgressBar;
 
     private LoginViewModel loginViewModel;
@@ -74,12 +77,17 @@ public class LoginActivity extends AppCompatActivity {
                 updateUiWithUser(loginResult.getSuccess());
             }
         });
+        if (getIntent().getExtras() != null) {
+            tripperNameEditText.setText(getIntent().getStringExtra(EXTRA_TRIPPER_NAME));
+            passwordEditText.requestFocus();
+        }
     }
 
     private void initViews() {
         tripperNameEditText = binding.trippername;
         passwordEditText = binding.password;
         loginButton = binding.login;
+        registerButton = binding.register;
         loadingProgressBar = binding.loading;
     }
 
@@ -122,6 +130,11 @@ public class LoginActivity extends AppCompatActivity {
             loginViewModel.login(tripperNameEditText.getText().toString(),
                     passwordEditText.getText().toString(), db);
         });
+
+        registerButton.setOnClickListener(v -> {
+            Intent intent = new Intent(activity, RegistrationActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void updateUiWithUser(LoggedInTripperView model) {
@@ -134,33 +147,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void showLoginFailed(String errMsg) {
-        hideKeyboardFrom();
+        HelperUtility.hideKeyboardFrom(activity);
         Snackbar snackbar = Snackbar.make(findViewById(R.id.container), errMsg, 12000);
         snackbar.setAction("Clear Fields!", v -> {
-            emptyInputEditText();
+            HelperUtility.emptyInputEditText(tripperNameEditText, passwordEditText);
             Toast.makeText(getApplicationContext(), errMsg, Toast.LENGTH_SHORT).show();
         });
         snackbar.show();
     }
-
-    /**
-     * method to Hide keyboard
-     */
-    private void hideKeyboardFrom() {
-        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        View view = activity.getCurrentFocus();
-        if (view == null) {
-            view = new View(activity);
-        }
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
-
-    /**
-     * This method is to empty all input edit text
-     */
-    private void emptyInputEditText() {
-        tripperNameEditText.setText(null);
-        passwordEditText.setText(null);
-    }
-
 }
