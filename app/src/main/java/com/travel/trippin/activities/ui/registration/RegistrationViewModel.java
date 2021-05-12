@@ -13,6 +13,8 @@ import com.travel.trippin.data.model.LoggedInTripper;
 import com.travel.trippin.data.model.Tripper;
 import com.travel.trippin.sql.DatabaseHelper;
 
+import java.util.regex.Pattern;
+
 public class RegistrationViewModel extends ViewModel {
 
     private MutableLiveData<RegistrationFormState> registrationFormState = new MutableLiveData<>();
@@ -49,7 +51,7 @@ public class RegistrationViewModel extends ViewModel {
                     null, null, null, null));
         } else if (!isEmailValid(email)) {
             registrationFormState.setValue(new RegistrationFormState(null, null,
-                    null, R.string.invalid_email, null, null));
+                    R.string.invalid_email, null, null, null));
         } else if (!isTripperNameValid(tripperName)) {
             registrationFormState.setValue(new RegistrationFormState(null, null,
                     null, R.string.invalid_tripperName, null, null));
@@ -66,13 +68,13 @@ public class RegistrationViewModel extends ViewModel {
 
     private boolean isFirstNameValid(String firstName) {
         if (firstName != null && !firstName.trim().isEmpty()) {
-            return "^[a-zA-Z]{3,50}$".matches(firstName);
+            return Pattern.compile("^[a-zA-Z]{3,50}$").matcher(firstName).matches();
         }
         return false;
     }
     private boolean isLastNameValid(String lastName) {
         if (lastName != null && !lastName.trim().isEmpty()) {
-            return "^[a-zA-Z]{3,50}$".matches(lastName);
+            return Pattern.compile("^[a-zA-Z]{3,50}$").matcher(lastName).matches();
         }
         return true;
     }
@@ -84,7 +86,7 @@ public class RegistrationViewModel extends ViewModel {
     }
     private boolean isTripperNameValid(String tripperName) {
         if (tripperName != null && !tripperName.trim().isEmpty()) {
-            return "^[a-zA-Z0-9_]{3,15}$".matches(tripperName);
+            return Pattern.compile("^[a-zA-Z0-9_]{3,15}$").matcher(tripperName).matches();
         }
         return false;
     }
