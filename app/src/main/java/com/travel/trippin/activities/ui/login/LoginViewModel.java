@@ -43,29 +43,30 @@ public class LoginViewModel extends ViewModel {
     }
 
     public void loginDataChanged(String emailOrTripperName, String password) {
-        if (!isEmailOrTripperNameValid(emailOrTripperName)) {
-            loginFormState.setValue(new LoginFormState(R.string.invalid_trippername, null));
-        } else if (!isPasswordValid(password)) {
-            loginFormState.setValue(new LoginFormState(null, R.string.invalid_password));
+        if (isEmailOrTripperNameValid(emailOrTripperName) != 1) {
+            loginFormState.setValue(new LoginFormState(isEmailOrTripperNameValid(emailOrTripperName), null));
+        } else if (isPasswordValid(password) != 1) {
+            loginFormState.setValue(new LoginFormState(null, isPasswordValid(password)));
         } else {
             loginFormState.setValue(new LoginFormState(true));
         }
     }
 
     // A placeholder username validation check
-    private boolean isEmailOrTripperNameValid(String emailOrTripperName) {
-        if (emailOrTripperName == null) {
-            return false;
+    private Integer isEmailOrTripperNameValid(String emailOrTripperName) {
+        if (emailOrTripperName == null || emailOrTripperName.trim().isEmpty()) {
+            return R.string.required_field_err;
         }
-        if (emailOrTripperName.contains("@")) {
-            return Patterns.EMAIL_ADDRESS.matcher(emailOrTripperName).matches();
-        } else {
-            return !emailOrTripperName.trim().isEmpty();
-        }
+        return 1;
     }
 
     // A placeholder password validation check
-    private boolean isPasswordValid(String password) {
-        return password != null && password.trim().length() > 5;
+    private Integer isPasswordValid(String password) {
+        if (password == null || password.trim().isEmpty()) {
+            return R.string.required_field_err;
+        } else if (password.trim().length() <= 5) {
+            return R.string.invalid_password_length;
+        }
+        return 1;
     }
 }

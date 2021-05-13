@@ -30,4 +30,13 @@ public class HelperUtility {
         }
     }
 
+    /**
+     * This method is to set asterisk on required input edit text
+     */
+    public static void setAsteriskOnHint(EditText...editTexts) {
+        for (EditText editText : editTexts) {
+            editText.setHint(editText.getHint() + "*");
+        }
+    }
+
 }

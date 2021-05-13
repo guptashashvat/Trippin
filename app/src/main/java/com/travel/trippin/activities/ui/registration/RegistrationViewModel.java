@@ -43,22 +43,22 @@ public class RegistrationViewModel extends ViewModel {
 
     public void registrationDataChanged(String firstName, String lastName, String email, String tripperName,
                                         String password, String confirmPassword) {
-        if (!isFirstNameValid(firstName)) {
+        if (isFirstNameValid(firstName) != 1) {
             registrationFormState.setValue(new RegistrationFormState(R.string.invalid_firstName, null,
                     null, null, null, null));
-        } else if (!isLastNameValid(lastName)) {
+        } else if (isLastNameValid(lastName) != 1) {
             registrationFormState.setValue(new RegistrationFormState(null, R.string.invalid_lastName,
                     null, null, null, null));
-        } else if (!isEmailValid(email)) {
+        } else if (isEmailValid(email) != 1) {
             registrationFormState.setValue(new RegistrationFormState(null, null,
                     R.string.invalid_email, null, null, null));
-        } else if (!isTripperNameValid(tripperName)) {
+        } else if (isTripperNameValid(tripperName) != 1) {
             registrationFormState.setValue(new RegistrationFormState(null, null,
                     null, R.string.invalid_tripperName, null, null));
-        } else if (!isPasswordValid(password)) {
+        } else if (isPasswordValid(password) != 1) {
             registrationFormState.setValue(new RegistrationFormState(null, null,
                     null, null, R.string.invalid_password, null));
-        } else if (!isConfirmPasswordValid(password, confirmPassword)) {
+        } else if (isConfirmPasswordValid(password, confirmPassword) != 1) {
             registrationFormState.setValue(new RegistrationFormState(null, null,
                     null, null, null, R.string.confirm_password_err));
         } else {
@@ -66,34 +66,51 @@ public class RegistrationViewModel extends ViewModel {
         }
     }
 
-    private boolean isFirstNameValid(String firstName) {
-        if (firstName != null && !firstName.trim().isEmpty()) {
-            return Pattern.compile("^[a-zA-Z]{3,50}$").matcher(firstName).matches();
+    private Integer isFirstNameValid(String firstName) {
+        if (firstName == null || firstName.trim().isEmpty()) {
+            return R.string.required_field_err;
+        } else if (!Pattern.compile("^[a-zA-Z]{3,50}$").matcher(firstName).matches()) {
+            return R.string.invalid_firstName;
         }
-        return false;
+        return 1;
     }
-    private boolean isLastNameValid(String lastName) {
-        if (lastName != null && !lastName.trim().isEmpty()) {
-            return Pattern.compile("^[a-zA-Z]{3,50}$").matcher(lastName).matches();
+    private Integer isLastNameValid(String lastName) {
+        if (lastName != null && !lastName.trim().isEmpty()
+                && !Pattern.compile("^[a-zA-Z]{3,50}$").matcher(lastName).matches()) {
+            return R.string.invalid_lastName;
         }
-        return true;
+        return 1;
     }
-    private boolean isEmailValid(String email) {
-        if (email != null && !email.trim().isEmpty()) {
-            return Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    private Integer isEmailValid(String email) {
+        if (email == null || email.trim().isEmpty()) {
+            return R.string.required_field_err;
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            return R.string.invalid_email;
         }
-        return false;
+        return 1;
     }
-    private boolean isTripperNameValid(String tripperName) {
-        if (tripperName != null && !tripperName.trim().isEmpty()) {
-            return Pattern.compile("^[a-zA-Z0-9_]{3,15}$").matcher(tripperName).matches();
+    private Integer isTripperNameValid(String tripperName) {
+        if (tripperName == null || tripperName.trim().isEmpty()) {
+            return R.string.required_field_err;
+        } else if (!Pattern.compile("^[a-zA-Z0-9_]{3,15}$").matcher(tripperName).matches()) {
+            return R.string.invalid_tripperName;
         }
-        return false;
+        return 1;
     }
-    private boolean isPasswordValid(String password) {
-        return password != null && password.trim().length() > 5;
+    private Integer isPasswordValid(String password) {
+        if (password == null || password.trim().isEmpty()) {
+            return R.string.required_field_err;
+        } else if (password.trim().length() <= 5) {
+            return R.string.invalid_password_length;
+        }
+        return 1;
     }
-    private boolean isConfirmPasswordValid(String password, String confirmPassword) {
-        return password.equals(confirmPassword);
+    private Integer isConfirmPasswordValid(String password, String confirmPassword) {
+        if (confirmPassword == null || confirmPassword.trim().isEmpty()) {
+            return R.string.required_field_err;
+        } else if (!password.equals(confirmPassword)) {
+            return R.string.confirm_password_err;
+        }
+        return 1;
     }
 }

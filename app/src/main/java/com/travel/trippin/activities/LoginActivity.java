@@ -74,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
                 showLoginFailed(loginResult.getError());
             }
             if (loginResult.getSuccess() != null) {
-                updateUiWithUser(loginResult.getSuccess());
+                loginSuccessful(loginResult.getSuccess());
             }
         });
         if (getIntent().getExtras() != null) {
@@ -89,6 +89,8 @@ public class LoginActivity extends AppCompatActivity {
         loginButton = binding.login;
         registerButton = binding.register;
         loadingProgressBar = binding.loading;
+
+        HelperUtility.setAsteriskOnHint(tripperNameEditText, passwordEditText);
     }
 
     private void initObjects() {
@@ -134,22 +136,23 @@ public class LoginActivity extends AppCompatActivity {
         registerButton.setOnClickListener(v -> {
             Intent intent = new Intent(activity, RegistrationActivity.class);
             startActivity(intent);
+            setResult(Activity.RESULT_OK);
+            finish();
         });
     }
 
-    private void updateUiWithUser(LoggedInTripperView model) {
-        Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_SHORT).show();
-
+    private void loginSuccessful(LoggedInTripperView model) {
+        Toast.makeText(getApplicationContext(), R.string.login_success, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(activity, TripperActivity.class);
+        startActivity(intent);
         setResult(Activity.RESULT_OK);
-
-        //Complete and destroy login activity once successful
         finish();
     }
 
     private void showLoginFailed(String errMsg) {
         HelperUtility.hideKeyboardFrom(activity);
         Snackbar snackbar = Snackbar.make(findViewById(R.id.container), errMsg, 12000);
-        snackbar.setAction("Clear Fields!", v -> {
+        snackbar.setAction(R.string.action_clear_fields, v -> {
             HelperUtility.emptyInputEditText(tripperNameEditText, passwordEditText);
             Toast.makeText(getApplicationContext(), errMsg, Toast.LENGTH_SHORT).show();
         });

@@ -13,6 +13,7 @@ import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
@@ -103,6 +104,9 @@ public class RegistrationActivity extends AppCompatActivity {
         confirmPasswordEditText = binding.confirmPassword;
         registerButton = binding.register;
         loginQuestionText = binding.loginQuestion;
+
+        HelperUtility.setAsteriskOnHint(firstNameEditText, emailEditText, tripperNameEditText,
+                passwordEditText, confirmPasswordEditText);
     }
 
     private void initObjects() {
@@ -154,13 +158,8 @@ public class RegistrationActivity extends AppCompatActivity {
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(@NonNull View widget) {
-                HelperUtility.hideKeyboardFrom(activity);
                 Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
-                startActivity(intent);
-                HelperUtility.emptyInputEditText(firstNameEditText, lastNameEditText, emailEditText,
-                        tripperNameEditText, passwordEditText, confirmPasswordEditText);
-                setResult(Activity.RESULT_OK);
-                finish();
+                finishAndMoveToAnotherActivity(intent);
             }
         };
         spannableString.setSpan(clickableSpan, 20, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -169,26 +168,41 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     private void registrationSuccessAction(Tripper tripper) {
-        HelperUtility.hideKeyboardFrom(activity);
-        Snackbar snackbar = Snackbar.make(findViewById(R.id.container), R.string.registration_success, 5000);
-        snackbar.show();
+        Toast.makeText(getApplicationContext(), R.string.registration_success, Toast.LENGTH_LONG).show();
         Intent intent = new Intent(this, LoginActivity.class);
         intent.putExtra(LoginActivity.EXTRA_TRIPPER_NAME, tripper.getTripperName());
-        startActivity(intent);
-        HelperUtility.emptyInputEditText(firstNameEditText, lastNameEditText, emailEditText,
-                tripperNameEditText, passwordEditText, confirmPasswordEditText);
-        setResult(Activity.RESULT_OK);
-        finish();
+        finishAndMoveToAnotherActivity(intent);
     }
 
     private void registrationFailedAction(String error) {
         HelperUtility.hideKeyboardFrom(activity);
         Snackbar snackbar = Snackbar.make(findViewById(R.id.container), error, 12000);
-        snackbar.setAction("Clear Fields!", v -> {
+        snackbar.setAction(R.string.action_clear_fields, v -> {
             HelperUtility.emptyInputEditText(emailEditText, tripperNameEditText, passwordEditText,
                     confirmPasswordEditText);
             Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
         });
         snackbar.show();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        if(keyCode == KeyEvent.KEYCODE_BACK)
+        {
+            Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
+            finishAndMoveToAnotherActivity(intent);
+            return true;
+        }
+        return false;
+    }
+
+    private void finishAndMoveToAnotherActivity(Intent intent) {
+        HelperUtility.hideKeyboardFrom(activity);
+        startActivity(intent);
+        HelperUtility.emptyInputEditText(firstNameEditText, lastNameEditText, emailEditText,
+                tripperNameEditText, passwordEditText, confirmPasswordEditText);
+        setResult(Activity.RESULT_OK);
+        finish();
     }
 }
