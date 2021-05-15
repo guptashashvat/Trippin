@@ -108,7 +108,7 @@ public class RegistrationViewModel extends ViewModel {
     private Integer isConfirmPasswordValid(String password, String confirmPassword) {
         if (confirmPassword == null || confirmPassword.trim().isEmpty()) {
             return R.string.required_field_err;
-        } else if (!password.equals(confirmPassword)) {
+        } else if (confirmPassword.trim().length() > 0 && !password.equals(confirmPassword)) {
             return R.string.confirm_password_err;
         }
         return 1;
